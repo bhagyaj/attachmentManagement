@@ -7,4 +7,6 @@ import com.bhagya.model.Data;
  */
 public interface DataRepository {
     Data save (Data data);
+
+    Data get(int id);
 }

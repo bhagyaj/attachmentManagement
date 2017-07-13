@@ -22,4 +22,7 @@ public class DataServiceImpl implements DataService {
     public Data save(Data data) {
         return dataRepository.save(data);
     }
+    public Data get(int id){
+        return dataRepository.get(id);
+    }
 }

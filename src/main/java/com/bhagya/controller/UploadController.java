@@ -6,7 +6,10 @@ import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -28,44 +31,6 @@ public class UploadController {
     @Autowired
     private SessionFactory sessionFactory;
 
-//    folder to save
-    private static String UPLOADED_FOLDER = "C://temp//";
-//    @GetMapping("/")
-//    public String index() {
-//        return "upload";
-//    }
-//    @PostMapping("/upload") // //new annotation since 4.3
-//    public String singleFileUpload(@RequestParam("file") MultipartFile file,
-//                                   RedirectAttributes redirectAttributes) {
-//
-//        if (file.isEmpty()) {
-//            redirectAttributes.addFlashAttribute("message", "Please select a file to upload");
-//            return "redirect:uploadStatus";
-//        }
-//
-//        try {
-//
-//            // Get the file and save it somewhere
-//            byte[] bytes = file.getBytes();
-//            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
-//            Files.write(path, bytes);
-//
-//            redirectAttributes.addFlashAttribute("message",
-//                    "You successfully uploaded '" + file.getOriginalFilename() + "'");
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return "redirect:/uploadStatus";
-//    }
-
-//    @GetMapping("/uploadStatus")
-//    public String uploadStatus() {
-//        return "uploadStatus";
-//    }
-
-
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public void addData(@RequestPart("note") String body,
                                         @RequestPart("location") String location,
@@ -85,4 +50,25 @@ public class UploadController {
         dataService.save(data);
     }
 
+       @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET, produces = "application/pdf")
+    @CrossOrigin
+    public Data get(@PathVariable("userId") int id){
+        System.out.println(id);
+        return dataService.get(id);
+    }
+
+
+//    @RequestMapping(value = "/Data/{userId}", method = RequestMethod.GET, produces = "application/pdf")
+//    public ResponseEntity<InputStreamResource> downloadPDFFile()
+//            throws IOException {
+//
+//        ClassPathResource pdfFile = new ClassPathResource("pdf-sample.pdf");
+//
+//        return ResponseEntity
+//                .ok()
+//                .contentLength(pdfFile.contentLength())
+//                .contentType(
+//                        MediaType.parseMediaType("application/octet-stream"))
+//                .body(new InputStreamResource(pdfFile.getInputStream()));
+//    }
 }

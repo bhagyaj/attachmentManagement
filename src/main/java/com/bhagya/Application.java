@@ -3,9 +3,11 @@ package com.bhagya;
 import org.apache.coyote.http11.AbstractHttp11Protocol;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.HttpMessageConverters;
 import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.orm.jpa.vendor.HibernateJpaSessionFactoryBean;
 import org.springframework.web.multipart.MultipartResolver;
 
@@ -33,5 +35,11 @@ public class Application {
     @Bean
     public HibernateJpaSessionFactoryBean sessionFactory(){
         return new HibernateJpaSessionFactoryBean();
+    }
+
+    @Bean
+    public HttpMessageConverters customConverters() {
+        ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+        return new HttpMessageConverters(arrayHttpMessageConverter);
     }
 }

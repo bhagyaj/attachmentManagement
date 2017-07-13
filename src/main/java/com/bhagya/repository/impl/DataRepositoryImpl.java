@@ -24,4 +24,9 @@ public class DataRepositoryImpl implements DataRepository {
         entityManager.flush();
         return data;
     }
+    @Override
+    public Data get(int id) {
+        System.out.println(id);
+        return entityManager.find(Data.class,id);
+    }
 }
