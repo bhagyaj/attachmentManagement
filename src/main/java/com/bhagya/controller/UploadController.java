@@ -2,12 +2,16 @@ package com.bhagya.controller;
 
 import com.bhagya.model.Data;
 import com.bhagya.service.DataService;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +19,18 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import sun.misc.IOUtils;
+import sun.misc.Resource;
 
-import java.io.IOException;
+import javax.activation.FileTypeMap;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.nio.file.Files;
 import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.List;
 
 
 /**
@@ -30,6 +43,9 @@ public class UploadController {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    ServletContext servletContext;
 
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public void addData(@RequestPart("note") String body,
@@ -50,12 +66,39 @@ public class UploadController {
         dataService.save(data);
     }
 
-       @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET, produces = "application/pdf")
-    @CrossOrigin
-    public Data get(@PathVariable("userId") int id){
-        System.out.println(id);
-        return dataService.get(id);
-    }
+    //working get
+//
+//    @RequestMapping("/Data/{userId}")
+//    public ResponseEntity<byte[]> getProfilePic(@PathVariable("userId") int id) throws IOException, SQLException {
+//
+//
+//        Blob blob = dataService.get(id).getFile();
+//
+//        int blobLength = (int) blob.length();
+//        byte[] blobAsBytes = blob.getBytes(1, blobLength);
+//        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(blob.toString()))).body(blob.getBytes(1,blobLength));
+////        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file))).body(Files.readAllBytes(file.toPath()));
+//    }
+
+//last try
+
+//    @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET)
+//    @CrossOrigin
+//    @JsonIgnore
+//    public ResponseEntity<List<byte[]>> get(@PathVariable("userId") int id) throws SQLException {
+//        List<byte[]> myOutput= null;
+//        Data data= dataService.get(id);
+//        Blob file =  data.getFile();
+//        int blobLength = (int) file.length();
+//        String note= data.getBody();
+//        String location = data.getLocation();
+//        myOutput.add(file.getBytes(1,blobLength));
+//        myOutput.add(note.getBytes());
+//        myOutput.add(location.getBytes());
+//
+//        System.out.println(id);
+//        return ResponseEntity.ok(myOutput);
+//    }
 
 
 //    @RequestMapping(value = "/Data/{userId}", method = RequestMethod.GET, produces = "application/pdf")
@@ -71,4 +114,13 @@ public class UploadController {
 //                        MediaType.parseMediaType("application/octet-stream"))
 //                .body(new InputStreamResource(pdfFile.getInputStream()));
 //    }
+
+    @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET)
+    @CrossOrigin
+    @JsonIgnore
+    public ResponseEntity<Data> get(@PathVariable("userId") int id) throws SQLException {
+
+        return ResponseEntity.ok(dataService.get(id));
+    }
+
 }

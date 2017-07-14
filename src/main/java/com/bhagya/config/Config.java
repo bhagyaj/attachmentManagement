@@ -45,6 +45,10 @@ public class Config {
 
     private static final String PROP_KEY_HIBERNATE_FORMAT_SQL = "hibernate.format_sql";
 
+    private static final String PROP_KEY_HIBERNATE_SHOW_SQL = "hibernate.show_sql";
+
+    private static final String HIBERNATE_SHOW_SQL_KEY  = "hibernate.show_sql";
+
     private static final String PROP_KEY_HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS = "hibernate.current_session_context_class";
 
     @Resource
@@ -74,8 +78,10 @@ public class Config {
         Properties properties = new Properties();
         properties.setProperty(HIBERNATE_DIALECT_KEY, env.getRequiredProperty(PROP_KEY_HIBERNATE_DIALECT));
         properties.setProperty(HIBERNATE_FORMAT_SQL_KEY, env.getRequiredProperty(PROP_KEY_HIBERNATE_FORMAT_SQL));
+        properties.setProperty(HIBERNATE_SHOW_SQL_KEY, env.getRequiredProperty(PROP_KEY_HIBERNATE_SHOW_SQL));
         properties.setProperty(DB_HB2DLL_CONFIG, env.getRequiredProperty(DB_HB2DLL_CONFIG));
         properties.setProperty(PROP_KEY_HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS, env.getRequiredProperty(PROP_KEY_HIBERNATE_CURRENT_SESSION_CONTEXT_CLASS));
+        properties.setProperty(PROP_KEY_HIBERNATE_SHOW_SQL, env.getRequiredProperty(PROP_KEY_HIBERNATE_SHOW_SQL));
         return properties;
     }
 
