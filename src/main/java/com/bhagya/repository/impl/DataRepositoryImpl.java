@@ -1,6 +1,7 @@
 package com.bhagya.repository.impl;
 
 import com.bhagya.model.Data;
+import com.bhagya.model.DataWrapper;
 import com.bhagya.repository.DataRepository;
 import org.springframework.stereotype.Repository;
 
@@ -28,5 +29,21 @@ public class DataRepositoryImpl implements DataRepository {
     public Data get(int id) {
         System.out.println(id);
         return entityManager.find(Data.class,id);
+    }
+
+    @Override
+    public DataWrapper getFile(String fileName) {
+        return entityManager.find(DataWrapper.class,fileName);
+    }
+
+    @Override
+    public DataWrapper saveFile(DataWrapper dataWrapper) {
+        if(String.valueOf(dataWrapper.getFileName())==null){
+            entityManager.persist(dataWrapper);
+        }else {
+            entityManager.merge(dataWrapper);
+        }
+        entityManager.flush();
+        return dataWrapper;
     }
 }

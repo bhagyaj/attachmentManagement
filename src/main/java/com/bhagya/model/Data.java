@@ -20,9 +20,11 @@ public class Data {
     private String body;
     @Column(name = "location")
     private String location;
-    @Column(name = "file")
-    @Lob
-    private Blob file;
+//    @Column(name = "file")
+//    @Lob
+//    private Blob file;
+    @Column(name = "fileName")
+    private String fileName;
 
 //    getters
 
@@ -30,9 +32,9 @@ public class Data {
         return id;
     }
 
-    public Blob getFile() {
-        return file;
-    }
+//    public Blob getFile() {
+//        return file;
+//    }
 
     public String getBody() {
         return body;
@@ -41,6 +43,10 @@ public class Data {
     public String getLocation() {
         return location;
     }
+
+    public String getFileName() {
+        return fileName;
+    }
     //    setters
 
 
@@ -48,9 +54,9 @@ public class Data {
         this.body = body;
     }
 
-    public void setFile(Blob file) {
-        this.file = file;
-    }
+//    public void setFile(Blob file) {
+//        this.file = file;
+//    }
 
     public void setId(int id) {
         this.id = id;
@@ -58,5 +64,9 @@ public class Data {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 }

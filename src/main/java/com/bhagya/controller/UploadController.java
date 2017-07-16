@@ -1,6 +1,7 @@
 package com.bhagya.controller;
 
 import com.bhagya.model.Data;
+import com.bhagya.model.DataWrapper;
 import com.bhagya.service.DataService;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
@@ -47,6 +48,9 @@ public class UploadController {
     @Autowired
     ServletContext servletContext;
 
+    @Autowired
+    FileDownloadController fileDownloadController;
+
     @RequestMapping(value = "/add", method = RequestMethod.POST)
     public void addData(@RequestPart("note") String body,
                                         @RequestPart("location") String location,
@@ -55,30 +59,26 @@ public class UploadController {
         Data data = new Data();
         data.setBody(body);
         data.setLocation(location);
+        data.setFileName(multipartFile.getOriginalFilename());
         try {
             Blob file = Hibernate.getLobCreator(sessionFactory.getCurrentSession()).createBlob(multipartFile.getInputStream(), multipartFile.getSize());
-            data.setFile(file);
+//            data.setFile(file);
+            DataWrapper dataWrapper= new DataWrapper(body,location,multipartFile.getOriginalFilename(),file);
+            dataService.saveFile(dataWrapper);
         }catch (HibernateException e){
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
         dataService.save(data);
+
     }
 
     //working get
-//
-//    @RequestMapping("/Data/{userId}")
-//    public ResponseEntity<byte[]> getProfilePic(@PathVariable("userId") int id) throws IOException, SQLException {
-//
-//
-//        Blob blob = dataService.get(id).getFile();
-//
-//        int blobLength = (int) blob.length();
-//        byte[] blobAsBytes = blob.getBytes(1, blobLength);
-//        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(blob.toString()))).body(blob.getBytes(1,blobLength));
-////        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file))).body(Files.readAllBytes(file.toPath()));
-//    }
+
+
 
 //last try
 
@@ -115,12 +115,24 @@ public class UploadController {
 //                .body(new InputStreamResource(pdfFile.getInputStream()));
 //    }
 
-    @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET)
-    @CrossOrigin
-    @JsonIgnore
-    public ResponseEntity<Data> get(@PathVariable("userId") int id) throws SQLException {
 
-        return ResponseEntity.ok(dataService.get(id));
+
+//    @RequestMapping(value="/Data/{userId}", method= RequestMethod.GET)
+//    @CrossOrigin
+//    @JsonIgnore
+//    public ResponseEntity<Data> get(@PathVariable("userId") int id) throws SQLException {
+//
+//        return ResponseEntity.ok(dataService.get(id));
+//    }
+
+    @RequestMapping("/Data/{userId}")
+    public Data getData(@PathVariable("userId") int id) throws IOException, SQLException {
+
+
+        String fileName = dataService.get(id).getFileName();
+        fileDownloadController.getProfilePic(fileName);
+        return dataService.get(id);
+//        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file))).body(Files.readAllBytes(file.toPath()));
     }
 
 }

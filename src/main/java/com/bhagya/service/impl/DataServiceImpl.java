@@ -1,6 +1,7 @@
 package com.bhagya.service.impl;
 
 import com.bhagya.model.Data;
+import com.bhagya.model.DataWrapper;
 import com.bhagya.repository.DataRepository;
 import com.bhagya.service.DataService;
 import org.hibernate.SessionFactory;
@@ -24,5 +25,15 @@ public class DataServiceImpl implements DataService {
     }
     public Data get(int id){
         return dataRepository.get(id);
+    }
+
+    @Override
+    public DataWrapper getFile(String fileName) {
+        return dataRepository.getFile(fileName);
+    }
+
+    @Override
+    public DataWrapper saveFile(DataWrapper dataWrapper) {
+        return dataRepository.saveFile(dataWrapper);
     }
 }
