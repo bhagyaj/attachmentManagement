@@ -56,15 +56,20 @@ public class UploadController {
                                         @RequestPart("location") String location,
                                         @RequestPart(value = "file", required = false) MultipartFile multipartFile){
         System.out.println("method call");
+        DataWrapper dataWrapper= new DataWrapper();
         Data data = new Data();
         data.setBody(body);
+        dataWrapper.setBody(body);
         data.setLocation(location);
+        dataWrapper.setLocation(location);
         data.setFileName(multipartFile.getOriginalFilename());
+        dataWrapper.setFileName(multipartFile.getOriginalFilename());
         try {
             Blob file = Hibernate.getLobCreator(sessionFactory.getCurrentSession()).createBlob(multipartFile.getInputStream(), multipartFile.getSize());
 //            data.setFile(file);
-            DataWrapper dataWrapper= new DataWrapper(body,location,multipartFile.getOriginalFilename(),file);
-            dataService.saveFile(dataWrapper);
+            dataWrapper.setFile(file);
+//            DataWrapper dataWrapper= new DataWrapper(body,location,multipartFile.getOriginalFilename(),file);
+//            dataService.saveFile(dataWrapper);
         }catch (HibernateException e){
             e.printStackTrace();
         } catch (IOException e) {
@@ -73,6 +78,7 @@ public class UploadController {
 
 
         dataService.save(data);
+        dataService.saveFile(dataWrapper);
 
     }
 
@@ -125,13 +131,18 @@ public class UploadController {
 //        return ResponseEntity.ok(dataService.get(id));
 //    }
 
+    @ModelAttribute
+    public Data getOutput(Data data){
+        return data;
+    }
     @RequestMapping("/Data/{userId}")
-    public Data getData(@PathVariable("userId") int id) throws IOException, SQLException {
+    public String getData(@PathVariable("userId") int id) throws IOException, SQLException {
 
 
         String fileName = dataService.get(id).getFileName();
-        fileDownloadController.getProfilePic(fileName);
-        return dataService.get(id);
+        getOutput(dataService.get(id));
+
+        return "redirect:DataWrapper/"+fileName;
 //        return ResponseEntity.ok().contentType(MediaType.valueOf(FileTypeMap.getDefaultFileTypeMap().getContentType(file))).body(Files.readAllBytes(file.toPath()));
     }
 

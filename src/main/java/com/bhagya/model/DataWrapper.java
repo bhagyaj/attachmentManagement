@@ -21,13 +21,32 @@ public class DataWrapper{
     private String fileName;
     @Column(name = "file")
     private Blob file;
-    public DataWrapper(String body, String location, String fileName, Blob file){
-        this.body = body;
-        this.location = location;
-        this.fileName = fileName;
+//    public DataWrapper(String body, String location, String fileName, Blob file){
+//        this.body = body;
+//        this.location = location;
+//        this.fileName = fileName;
+//        this.file = file;
+//    }
+
+//    setters
+
+    public void setFile(Blob file) {
         this.file = file;
     }
-// getters
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    // getters
     public String getBody() {
         return body;
     }

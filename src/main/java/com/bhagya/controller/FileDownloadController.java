@@ -27,7 +27,7 @@ import java.sql.SQLException;
 public class FileDownloadController {
     @Autowired
     DataService dataService;
-    @RequestMapping("/Data/{fileName}")
+    @RequestMapping("/DataWrapper/{fileName}")
     public ResponseEntity<byte[]> getProfilePic(@PathVariable("fileName") String fileName) throws IOException, SQLException {
 
 
